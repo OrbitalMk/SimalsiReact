@@ -1,12 +1,17 @@
-import React from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const PageLink = ({ active, label, url, setpage }) => {
   //'bg-white': active
   // mt-1 mb-1 w-8 h-8 flex justify-center items-center
+  const buttonClickHandle = () => {
+    setpage(url)
+  }
+
   return (
     <button
         className={`${active && "bg-violet-700 text-white"} mr-1 mb-1 px-4 py-3 border border-transparent hover:border-violet-300 rounded text-sm`}
-        onClick={() => setpage(url)}
+        onClick={buttonClickHandle}
         >
       <span dangerouslySetInnerHTML={{ __html: label }}></span>
     </button>

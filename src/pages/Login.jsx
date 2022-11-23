@@ -1,30 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 import axios from 'axios';
+import useUser from '../hooks/useUser';
 // import SimalsiLogo from '../logo-simalsi.svg';
 
 export default function Login() {
     const [email, setEmail] = useState('jayden20@example.com');
-    const [password, setPassword] = useState('password');
+    // const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { login, isLogged } = useUser();
+
+    useEffect(() => {
+        if(isLogged) {
+            navigate('/home')
+        }
+    }, [isLogged]);
 
     const handleLoginButton = async (e) => {
         e.preventDefault();
-        axios.post(
-            'http://localhost:8000/api/login',
-            { email, password },
-            { headers: { 'Content-Type': 'application/json' }
-        }).then(response => {
-            const { token } = response.data
-
-            localStorage.setItem('token', token);
-            console.log(token)
-            navigate('/home')
-        }).catch(error => {
-            const { message } = error
-            throw new Error(message)
-        });
+        login({ email, password });
     };
 
     return (
@@ -45,6 +41,7 @@ export default function Login() {
                 </section>
 
                 <form className='flex flex-col' onSubmit={handleLoginButton}>
+
                     <div className='mb-5'>
                         <label htmlFor='email'>Email</label>
                         <input id='email' value={email} onChange={e => setEmail(e.target.value)} type='text' className='border-2 outline-none border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm w-full py-1 px-3' />
@@ -52,6 +49,7 @@ export default function Login() {
                             // errors.email && <span className='text-red-500 text-sm'>{errors.email}</span>
                         }
                     </div>
+
                     <div className='mb-5'>
                         <label htmlFor='password'>Password</label>
                         <input id='password' value={password} onChange={e => setPassword(e.target.value)} type='password' className='border-2 outline-none border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm w-full py-1 px-3' />
@@ -66,6 +64,7 @@ export default function Login() {
                     </div>
                     
                     <button type='submit' onClick={handleLoginButton} className='bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200'>Sign In</button>
+
                 </form>
 
             </main>

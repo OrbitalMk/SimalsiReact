@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import useUser from '../hooks/useUser'
+
 import MenuIcon from '@mui/icons-material/Menu'
-import Home from '@mui/icons-material/Home'
 import { useMediaQuery } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faHome, faBars, faUserDoctor, faHouseMedical, faX } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faHome, faBars, faUserDoctor, faHouseMedical, faX, faSyringe, faPerson } from '@fortawesome/free-solid-svg-icons'
 
 function Header({ open, handleOpenClick }) {
     const navigate = useNavigate();
+    const { logout, isLogged } = useUser();
+
+    useEffect(() => {
+        if(!isLogged) {
+            navigate('/login')
+        }
+    }, [isLogged]);
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        navigate('/login');
+        logout();
     }
 
 	return (
@@ -93,11 +100,16 @@ function MenuItem({ text, url, icon, submenu, sidebarOpen }) {
 
 const menu = [
     {text: 'Home', icon: faHome, url: '/home', submenu: false},
-    {text: 'Paciente', icon: faHome, url: '/paciente', submenu: false},
+    {text: 'Paciente', icon: faPerson, url: '/paciente', submenu: false},
     {text: 'Medico', icon: faUserDoctor, url: '/medico', submenu: false},
-    {text: 'Recepcionista', icon: faBars, url: 'paciente', submenu: false},
-    {text: 'Unidad', icon: faHouseMedical, url: 'paciente', submenu: false},
-    {text: 'Procedimiento', icon: faBars, url: 'paciente', submenu: [{text: 'Region Anatomica'}, {text: 'Procedimiento Quirurgico'}, {text: 'Procedimiento'}]},
+    {text: 'Patologo', icon: faSyringe, url: '/patologo', submenu: false},
+    {text: 'Recepcionista', icon: faBars, url: '/recepcionista', submenu: false},
+    {text: 'Unidad', icon: faHouseMedical, url: '/unidad', submenu: false},
+    {text: 'Solicitud', icon: faBars, url: null, submenu: [
+        {text: 'Region Anatomica', url: '/region'},
+        {text: 'Procedimiento Quirurgico', url: '/procedimiento'},
+        {text: 'Solicitud Anatomica'}
+    ]},
 ]
 
 function MobileSidebar({ open, handleOpenClick }) {
@@ -123,11 +135,6 @@ function MobileSidebar({ open, handleOpenClick }) {
                     </div>
                 </div>
                 <div className='px-4 pt-2 pb-4 space-y-2'>
-                    <div className='relative flex items-center bg-sky-100 hover:text-violet-500 rounded-lg p-3 space-x-2 cursor-pointer'>
-                        <Home></Home>
-                        <h1 className={`${!open && "hidden"}`}>Dashboard</h1>
-                    </div>
-        
                     {
                         menu && menu.map((val, key) => {
                             return (
@@ -158,11 +165,6 @@ function WebSidebar({ open }) {
                 </div>
             </div>
             <div className='px-4 pt-2 pb-4 space-y-2'>
-                <div className='relative flex items-center bg-sky-100 hover:text-violet-500 rounded-lg p-3 space-x-2 cursor-pointer'>
-                    <Home></Home>
-                    <h1 className={`${!open && "hidden"}`}>Dashboard</h1>
-                </div>
-
                 {
                     menu && menu.map((val, key) => {
                         return (
@@ -220,8 +222,8 @@ export default function Layout({ children }) {
                 open={openMenu}
                 handleOpenClick={handleOpenMenuClick}
              />
-            <div className={`${openMenu ? "md:ml-64" : "ml-0 md:ml-20"}`}>
-                <div className='!pt-20 p-6 sm:p-12'>
+            <div className={`${openMenu ? "md:ml-64" : "ml-0 md:ml-20"} duration-300`}>
+                <div className='!pt-20 p-6 sm:p-8'>
 					{ children }
 				</div>
             </div>

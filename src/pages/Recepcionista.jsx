@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import Layout from '../layout/Layout'
 import axios from "axios"
-import Table from '../component/Table'
+import Table from '../components/Table'
 import '../index.css'
 
-export default function Medico() {
+export default function Recepcionista() {
     const [data, setData] = useState(null)
     const [page, setPage] = useState('http://localhost:8000/api/medicos')
 
@@ -25,23 +25,25 @@ export default function Medico() {
 	}
 
     useEffect(() => {
-        axios.get(page)
+        /*axios.get(page)
             .then(response => {
                 setData(response.data);
-            })
+            })*/
     }, [page]);
 
     return (
         <Layout>
-            <button className='mt-10 bg-blue-500 hover:bg-blue-600 text-white rounded-md px-3 py-1 mb-5'>Crear Medico</button>
+            <div className='p-8 bg-white border rounded-xl'>
+                <button className='bg-blue-500 hover:bg-blue-600 text-white rounded-md px-3 py-1 mb-5'>Crear Recepcionista</button>
 
-            <Table
-				columns={['#', 'Nombres', 'Apellidos', 'Codigo sanitario', 'Telefono', 'Acciones']}
-				data={data?.data}
-				links={data?.links}
-				printData={printUserData}
-                setpage={setPage}
-			/>
+                <Table
+                    columns={['#', 'Nombres', 'Apellidos', 'Codigo sanitario', 'Telefono', 'Acciones']}
+                    data={data?.data}
+                    links={data?.links}
+                    printData={printUserData}
+                    setpage={setPage}
+                />
+            </div>
         </Layout>
     );
 }
